@@ -11,9 +11,9 @@ Iván Magariños Brea
 
 ---
 ## Organización
-Para comezar falaremos en como se divide este proyecto, onde teremos por unha parte o arquivo principal o cal chamaremos `docker-compose.yml`, este é un arquivo de configuración que define e executa aplicacions multi-contenedor de Docker, nel especificamos como se debe construir e executar os contenedores. 
+Para comezar falaremos en como se divide este proyecto, onde teremos por unha parte o arquivo, que recibe o nome `docker-compose.yml`, este é un arquivo de configuración que define e executa aplicacions multi-contenedor de Docker, nel especificamos como se debe construir e executar os contenedores. 
 
-Por outra parte teremos dous directorios principais que serviran como volumes como manda a [setup da imaxe](https://hub.docker.com/r/internetsystemsconsortium/bind9). Os cales serán `/etc/bind`, `/var/cache/bind` e `/var/lib/bind`, os cales podremos crear rapidamente usando o comando:
+Asimesmo os directotios serviran como volumes como manda a [setup da imaxe](https://hub.docker.com/r/internetsystemsconsortium/bind9). Os cales serán `/etc/bind`, `/var/cache/bind` e `/var/lib/bind`, os cales podremos crear rapidamente usando o comando:
 ```
 mkdir -p ./etc/bind ./var/cache/bind ./var/lib/bind
 ```
