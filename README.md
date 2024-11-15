@@ -15,7 +15,7 @@ Antes de empezar, debemos crear dous directorios rapidamente usando o comando:
 ```
 mkdir -p ./etc/bind ./var/cache/bind ./var/lib/bind
 ```
-O directorio`/etc` serve para configurar BIND e `/var` serve para o funcionamento de BIND.
+
 
 ---
 ## Permisos
