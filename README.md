@@ -11,25 +11,19 @@ Iván Magariños Brea
 
 ---
 ## Organización
-Para comezar falaremos en como se divide este proyecto, onde teremos por unha parte o arquivo, que recibe o nome `docker-compose.yml`, este é un arquivo de configuración que define e executa aplicacions multi-contenedor de Docker, nel especificamos como se debe construir e executar os contenedores. 
-
-Asimesmo os directotios serviran como volumes como manda a [setup da imaxe](https://hub.docker.com/r/internetsystemsconsortium/bind9). Os cales serán `/etc/bind`, `/var/cache/bind` e `/var/lib/bind`, os cales podremos crear rapidamente usando o comando:
+Antes de empezar, debemos crear dous directorios rapidamente usando o comando:
 ```
 mkdir -p ./etc/bind ./var/cache/bind ./var/lib/bind
 ```
-A rama de directorios de `/etc` serven para a configuración de BIND e a rama de `/var` serve para o espazo de traballo do funcionamento de BIND.
+O directorio`/etc` serve para configurar BIND e `/var` serve para o funcionamento de BIND.
 
 ---
 ## Permisos
-Antes de pasar a crear os documentos de configuración faremos o comando:
+Debemos dar os permisos antes de proceder ca prácrica:
 ```
 sudo chown -R 100:100 ./etc/bind/ ./var/cache/bind
 ```
-O cal fai que os donos dos directorios e subdirectores sinalados cambien a o propietario e grupo 100.
 
-Isto xa que asi nos aseguramos que BIND teña os permisos necesarios para funcionar dentro dun contenedor de Docker, o cal é clave para o funcionamento e a seguridade.
-
----
 ## docker-compose.yml
 Neste docker-compose seguiremos as seguintes directrices:
 ```
