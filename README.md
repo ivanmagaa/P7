@@ -38,37 +38,34 @@ Cliente con ferramientas de rede
 Para cumprir isto facemos o seguinte arquivo:
 ```
 services:
-  #Servizos que se executarán no contenedor
-  DNS: #Como queremos chamar nos o servizo
+  DNS: 
     image: internetsystemsconsortium/bind9:9.18 #Imaxe que utilizaremos no contenedor
     container_name: DNS_P7 #Nome específico do contenedor
     ports:
-      #Mapeo dos portos host:contenedor
       - 54:53/udp
       - 54:53/tcp
-      - 127.0.0.1:953:953/tcp #Neste só pertmite conexións desde localhost
+      - 127.0.0.1:953:953/tcp 
     volumes:
-      #Volumes onde se montará o contenedor
       - ./etc/bind:/etc/bind
       - ./var/cache/bind:/var/cache/bind
       - ./var/lib/bind:/var/lib/bind
-    restart: always #Esta opción indica que ó contenedor debe reiniciarse en ciertas condiciones
+    restart: always 
     networks:
-      P7_network: #Rede que utilizará
+      P7_network:
         ipv4_address: 172.18.0.1 #IP que utilzará
   Cliente:
     image: alpine #Imaxe do cliente
     container_name: Cliente_P7 #Nome do container
     tty: true 
     stdin_open: true
-    command: /bin/sh -c "apk update && apk add bind-tools" #Comando para que instale dig ao iniciar os contenedores
+    command: /bin/sh -c "apk update && apk add bind-tools" 
     networks:
       P7_network:  #Rede que utilizará
         ipv4_address: 172.18.0.2 #IP que utilizará
     dns:
       - 172.18.0.1 #IP do DNS
 networks:
-  P7_network: #Creamos unha rede tipo bridge
+  P7_network: 
     driver: bridge
     ipam:
       config:
@@ -79,69 +76,65 @@ networks:
 
 ---
 ## named.conf
-O named.conf o utilizaremos para chamar a outros archivos(como se fora unha función main), para que así quede todo maís ordenado:
+O named.conf o utilizaremos para chamar a outros archivos.
 ```
 include "/etc/bind/named.conf.options";
 include "/etc/bind/named.conf.local";
 ```
-> [!IMPORTANT]
-> Para ver a estructura dos documentos e os arquivos en sí están neste mesmo repositorio
+
 ---
 ### named.conf.options
 Este arquivo sirve para indicar as opcións do servidor DNS nel introduciremos o codigo:
 ```
 options {
-        directory "/var/cache/bind/"; #Directorio onde se almacenarán os datos de caché
+        directory "/var/cache/bind/"; 
         dnssec-validation no;
         forwarders {
-                8.8.8.8; #DNS de Google
-                1.1.1.1; #DNS de Cloudflare
+                8.8.8.8; 
+                1.1.1.1; 
          };
-         forward only; #Indicamos que as consultas que non podan resolverse de una forma local serán reenviadas aos servidores indicados arriba
-        listen-on { any; }; #O servidor escoitará todas as interface IPv4 dispoñibles no servidor
-        listen-on-v6 { any; }; #O servidor escoitará todas as interface IPv6 dispoñibles no servidor
+         forward only;
+        listen-on { any; };
+        listen-on-v6 { any; }; 
         allow-query{
                 any;
-        }; #Calquera dispositivo pode realizar consultas DNS
+        }; 
 };
 ```
-> [!WARNING]
-> No comando `allow-query` non é recomendable por `any` nun entorno real
+
 ### named.conf.local
-Este arquivo define a zona que terá o servidor DNS:
+Define a zona do DNS:
 
 ---
 ### named.conf.local
 ```
 zone "practica7.int" {
-        type master; #Indicamos que o servidor será o principal na zona
+        type master; 
         file "/var/lib/bind/db.practica7.int"; Ruta ao ficheiro que contén os rexistros DNS na zona
         allow-query {
                 any;
                 };
         };  #Calquera dispositivo pode realizar consultas DNS
 ```
-> [!WARNING]
-> No comando `allow-query` non é recomendable por `any` nun entorno real
+
 
 ---
 ## db.practica7.int
 Este arquivo almacenará a información de mapeo dos nomes das direccions IPs:
 ```
-$TTL 86400 ; # Tiempo de vida (TTL) de los registros en segundos
+$TTL 86400 ; 
 @ IN SOA ns.practica7.in some.email.address. (
-2024111401 ; Serial #número de versión del archivo de zona
-3600 ; Refresh #tiempo que un secundario espera para actualizar la zona
-1800 ; Retry #tiempo de espera en caso de fallo para reintentar
-36000 ; Expire #tiempo después del cual la zona se considera no válida
-86400 ; Minimum TTL #tiempo mínimo de caché para registros negativos
+2024111401 ; Serial 
+3600 ; Refresh 
+1800 ; Retry 
+36000 ; Expire 
+86400 ; Minimum TTL 
 )
-@ IN NS ns.practica7.int. # NS: Servidor de nombres de la zona
-ns IN A 172.18.0.1 # A: Dirección IP del servidor de nombres principal
-www IN A 172.18.0.3 # A: Dirección IP del servidor www.practica7.int.
-alias IN CNAME www # CNAME: Alias de www, permite que alias.practica7.int apunte a www.practica7.int.
-texto IN TXT "Rexistro TXT de exemplo" # TXT: Registro de texto para información adicional de la zona.
-```
+@ IN NS ns.practica7.int. 
+ns IN A 172.18.0.1 
+www IN A 172.18.0.3 
+alias IN CNAME www 
+texto IN TXT "Rexistro TXT de exemplo" 
 
 ---
 ## Comprobación
